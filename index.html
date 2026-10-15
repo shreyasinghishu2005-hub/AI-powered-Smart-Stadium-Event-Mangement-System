@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Stadium Command Center</title>
+    <meta name="description" content="AI-powered Smart Stadium Command Center for real-time crowd management, security monitoring, and operational intelligence." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="static/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-top">
+          <div class="brand">
+            <div class="brand-logo">
+              <i class="fas fa-futbol"></i>
+            </div>
+            <div class="brand-text">
+              <span class="brand-title">Smart Stadium</span>
+              <span class="brand-sub">Command Center</span>
+            </div>
+          </div>
+
+          <nav class="nav-list">
+            <button class="nav-item active" data-view="command" id="nav-command">
+              <i class="fas fa-tachometer-alt nav-icon"></i>
+              <span>Dashboard</span>
+            </button>
+            <button class="nav-item" data-view="monitoring" id="nav-monitoring">
+              <i class="fas fa-eye nav-icon"></i>
+              <span>Live Monitoring</span>
+            </button>
+            <button class="nav-item" data-view="operations" id="nav-operations">
+              <i class="fas fa-cogs nav-icon"></i>
+              <span>Operations</span>
+            </button>
+            <button class="nav-item" data-view="analytics" id="nav-analytics">
+              <i class="fas fa-chart-line nav-icon"></i>
+              <span>Analytics</span>
+            </button>
+            <button class="nav-item" data-view="reports" id="nav-reports">
+              <i class="fas fa-file-alt nav-icon"></i>
+              <span>Reports</span>
+            </button>
+            <button class="nav-item" data-view="alerts" id="nav-alerts">
+              <i class="fas fa-bell nav-icon"></i>
+              <span>Alerts</span>
+              <span class="nav-badge" id="alertBadge">3</span>
+            </button>
+            <button class="nav-item" data-view="settings" id="nav-settings">
+              <i class="fas fa-sliders-h nav-icon"></i>
+              <span>Settings</span>
+            </button>
+          </nav>
+        </div>
+
+        <div class="sidebar-bottom">
+          <button class="dark-mode-toggle" id="darkModeToggle">
+            <i class="fas fa-moon"></i>
+            <span>Dark Mode</span>
+          </button>
+
+          <div class="live-ops-card">
+            <div class="live-ops-header">
+              <span class="live-dot"></span>
+              <div>
+                <strong>Live Operations</strong>
+                <span class="live-sub">All systems nominal</span>
+              </div>
+            </div>
+            <div class="event-badge">
+              <i class="fas fa-calendar"></i>
+              <div>
+                <span>Event Ongoing</span>
+                <strong id="systemClock">Match day 18:45</strong>
+              </div>
+            </div>
+            <div class="sensor-stats">
+              <div class="sensor-stat">
+                <div class="sensor-icon cam"><i class="fas fa-video"></i></div>
+                <div><strong>24</strong><span>Cameras</span></div>
+              </div>
+              <div class="sensor-stat">
+                <div class="sensor-icon sensor"><i class="fas fa-wifi"></i></div>
+                <div><strong>86</strong><span>Sensors</span></div>
+              </div>
+              <div class="sensor-stat">
+                <div class="sensor-icon gate"><i class="fas fa-door-open"></i></div>
+                <div><strong>12</strong><span>Scanners</span></div>
+              </div>
+            </div>
+            <button class="btn-live-feed" id="viewLiveFeed">
+              <i class="fas fa-play-circle"></i> View Live Feed
+            </button>
+          </div>
+
+          <div class="user-card">
+            <div class="user-avatar">SB</div>
+            <div class="user-info">
+              <strong>Shivam Bansal</strong>
+              <span>Admin</span>
+            </div>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Top Bar -->
+        <header class="topbar">
+          <div class="greeting">
+            <h1 id="greetingText">
+              <span class="wave-emoji">👋</span> Good Evening, Shivam
+            </h1>
+            <p>Here's what's happening at <strong id="focusZone">North Gate</strong> – City Arena</p>
+          </div>
+          <div class="topbar-right">
+            <div class="topbar-info">
+              <span class="info-chip"><i class="fas fa-calendar-alt"></i> <span id="dateDisplay">Sat, 12 Apr 2025</span></span>
+              <span class="info-chip"><i class="fas fa-clock"></i> <span id="timeDisplay">19:45</span></span>
+              <span class="live-indicator"><span class="live-dot-sm"></span> Live</span>
+            </div>
+            <div class="topbar-actions">
+              <button class="action-icon" id="notifBtn" title="Notifications">
+                <i class="fas fa-bell"></i>
+                <span class="notif-badge">3</span>
+              </button>
+              <button class="action-icon" id="userBtn" title="Profile">
+                <i class="fas fa-user-circle"></i>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- Dashboard View -->
+        <section class="view active" id="command-view">
+          <!-- Metrics Row -->
+          <div class="metrics-row">
+            <article class="metric-card metric-blue">
+              <div class="metric-icon-wrap blue"><i class="fas fa-users"></i></div>
+              <div class="metric-body">
+                <span class="metric-label">Attendance</span>
+                <strong class="metric-value" id="attendanceMetric">48,260</strong>
+                <span class="metric-trend up" id="attendanceTrend"><i class="fas fa-arrow-up"></i> +12% vs. last event</span>
+              </div>
+            </article>
+            <article class="metric-card metric-green">
+              <div class="metric-icon-wrap green"><i class="fas fa-stopwatch"></i></div>
+              <div class="metric-body">
+                <span class="metric-label">Avg. Gate Wait</span>
+                <strong class="metric-value" id="waitMetric">8 min</strong>
+                <span class="metric-trend down" id="waitTrend"><i class="fas fa-arrow-down"></i> -45% vs. last event</span>
+              </div>
+            </article>
+            <article class="metric-card metric-orange">
+              <div class="metric-icon-wrap orange"><i class="fas fa-shield-alt"></i></div>
+              <div class="metric-body">
+                <span class="metric-label">Security Risk</span>
+                <strong class="metric-value" id="riskMetric">Medium</strong>
+                <span class="metric-trend down" id="riskTrend"><i class="fas fa-arrow-down"></i> -32% vs. last event</span>
+              </div>
+            </article>
+            <article class="metric-card metric-purple">
+              <div class="metric-icon-wrap purple"><i class="fas fa-rupee-sign"></i></div>
+              <div class="metric-body">
+                <span class="metric-label">Revenue Pulse</span>
+                <strong class="metric-value" id="revenueMetric">₹318,000</strong>
+                <span class="metric-trend up" id="revenueTrend"><i class="fas fa-arrow-up"></i> +18% vs. last hour</span>
+              </div>
+            </article>
+          </div>
+
+          <!-- Main Dashboard Grid -->
+          <div class="dashboard-grid">
+            <!-- Stadium Map Panel -->
+            <section class="panel stadium-panel">
+              <div class="panel-header">
+                <div class="panel-title-row">
+                  <span class="live-badge"><i class="fas fa-circle"></i> LIVE</span>
+                  <h3>Stadium Crowd & Route Map</h3>
+                </div>
+                <div class="map-controls">
+                  <div class="tab-group" id="mapTabs">
+                    <button class="tab-btn active" data-map-mode="crowd">Crowd</button>
+                    <button class="tab-btn" data-map-mode="security">Security</button>
+                    <button class="tab-btn" data-map-mode="routes">Routes</button>
+                    <button class="tab-btn" data-map-mode="facilities">Facilities</button>
+                  </div>
+                  <div class="view-toggle">
+                    <button class="toggle-btn" id="view2D">2D</button>
+                    <button class="toggle-btn active" id="view3D">3D</button>
+                  </div>
+                  <button class="icon-btn" id="fullscreenMap" title="Fullscreen"><i class="fas fa-expand"></i></button>
+                </div>
+              </div>
+
+              <div class="stadium-map-container" id="stadiumBoard">
+                <img src="static/stadium_bg.png" alt="Stadium aerial view" class="stadium-bg-img" />
+                <!-- Zone overlays rendered by JS -->
+              </div>
+
+              <div class="map-legend">
+                <span class="legend-title">Crowd Density</span>
+                <div class="legend-items">
+                  <span class="legend-item"><span class="legend-dot low"></span> Low</span>
+                  <span class="legend-item"><span class="legend-dot moderate"></span> Moderate</span>
+                  <span class="legend-item"><span class="legend-dot high"></span> High</span>
+                  <span class="legend-item"><span class="legend-dot critical"></span> Very High</span>
+                </div>
+              </div>
+
+              <div class="selected-zone-bar">
+                <div class="sz-info">
+                  <span class="sz-dot"></span>
+                  <div>
+                    <span class="sz-label">Selected Zone</span>
+                    <strong id="selectedZoneName">North Gate</strong>
+                  </div>
+                </div>
+                <div class="sz-action">
+                  <span id="selectedZoneAction">Open lane N2 and redirect arrivals to East Plaza</span>
+                </div>
+                <button class="btn-view-details" id="viewDetailsBtn"><i class="fas fa-eye"></i> View Details</button>
+              </div>
+            </section>
+
+            <!-- Security Monitoring Panel -->
+            <section class="panel security-panel">
+              <div class="panel-header">
+                <div>
+                  <h3>Security Monitoring</h3>
+                  <span class="panel-subtitle">Live alerts & camera feeds</span>
+                </div>
+                <div class="system-status">
+                  <span class="status-dot green"></span> All systems online
+                </div>
+              </div>
+
+              <div class="security-tabs" id="securityTabs">
+                <button class="sec-tab active" data-sec-tab="alerts">Live Alerts <span class="sec-badge red" id="alertCountBadge">3</span></button>
+                <button class="sec-tab" data-sec-tab="cameras">Cameras <span class="sec-badge blue">24</span></button>
+                <button class="sec-tab" data-sec-tab="incidents">Incidents <span class="sec-badge gray">0</span></button>
+              </div>
+
+              <div class="alert-feed" id="alertFeed">
+                <!-- Alerts rendered by JS -->
+              </div>
+
+              <button class="btn-view-all" id="viewAllAlerts">View All Alerts <i class="fas fa-arrow-right"></i></button>
+            </section>
+          </div>
+
+          <!-- Bottom Grid -->
+          <div class="bottom-grid">
+            <!-- Predictive Analytics -->
+            <section class="panel analytics-panel">
+              <div class="panel-header">
+                <div class="panel-title-with-icon">
+                  <div class="panel-icon blue"><i class="fas fa-chart-bar"></i></div>
+                  <div>
+                    <h3>Predictive Analytics</h3>
+                    <span class="panel-subtitle">AI-driven insights for better decision making</span>
+                  </div>
+                </div>
+                <button class="btn-text" id="viewDetailedReport">View Detailed Report <i class="fas fa-arrow-right"></i></button>
+              </div>
+
+              <div class="analytics-cards" id="analyticsCards">
+                <!-- Rendered by JS -->
+              </div>
+
+              <div class="chart-section">
+                <div class="chart-header">
+                  <span class="chart-title">Demand vs. Forecast</span>
+                  <div class="chart-legend">
+                    <span class="cl-item"><span class="cl-line solid"></span> Actual</span>
+                    <span class="cl-item"><span class="cl-line dashed"></span> Forecast</span>
+                  </div>
+                </div>
+                <canvas id="demandChart" height="180"></canvas>
+              </div>
+            </section>
+
+            <!-- Resource Optimizer -->
+            <section class="panel optimizer-panel">
+              <div class="panel-header">
+                <div class="panel-title-with-icon">
+                  <div class="panel-icon green"><i class="fas fa-sliders-h"></i></div>
+                  <div>
+                    <h3>Resource Optimizer</h3>
+                    <span class="panel-subtitle">Staff & inventory management</span>
+                  </div>
+                </div>
+                <button class="btn-primary-sm" id="autoOptimize"><i class="fas fa-magic"></i> Auto-Optimize</button>
+              </div>
+
+              <div class="resource-list" id="resourceList">
+                <!-- Rendered by JS -->
+              </div>
+            </section>
+          </div>
+
+          <!-- Footer Actions Row -->
+          <div class="footer-grid">
+            <!-- Quick Actions -->
+            <section class="panel quick-actions-panel">
+              <div class="panel-header compact">
+                <div class="panel-title-with-icon">
+                  <div class="panel-icon orange"><i class="fas fa-bolt"></i></div>
+                  <div>
+                    <h3>Quick Actions</h3>
+                    <span class="panel-subtitle">One-click access to key operations</span>
+                  </div>
+                </div>
+              </div>
+              <div class="quick-action-buttons">
+                <button class="qa-btn" id="qaOpenLane"><i class="fas fa-road"></i> Open Extra Lane</button>
+                <button class="qa-btn danger" id="qaSendAlert"><i class="fas fa-exclamation-triangle"></i> Send Alert</button>
+                <button class="qa-btn info" id="qaMessageTeam"><i class="fas fa-comment-dots"></i> Message Team</button>
+                <button class="qa-btn success" id="qaGenerateReport"><i class="fas fa-file-export"></i> Generate Report</button>
+              </div>
+            </section>
+
+            <!-- Recent Activity -->
+            <section class="panel activity-panel">
+              <div class="panel-header compact">
+                <div class="panel-title-with-icon">
+                  <div class="panel-icon purple"><i class="fas fa-history"></i></div>
+                  <div>
+                    <h3>Recent Activity</h3>
+                    <span class="panel-subtitle">Latest events and system logs</span>
+                  </div>
+                </div>
+                <button class="btn-text" id="viewAllActivity">View All <i class="fas fa-arrow-right"></i></button>
+              </div>
+              <div class="activity-list" id="activityList">
+                <!-- Rendered by JS -->
+              </div>
+            </section>
+
+            <!-- Weather -->
+            <section class="panel weather-panel">
+              <div class="panel-header compact">
+                <div class="panel-title-with-icon">
+                  <div class="panel-icon cyan"><i class="fas fa-cloud-sun"></i></div>
+                  <div>
+                    <h3>Weather & External Info</h3>
+                  </div>
+                </div>
+              </div>
+              <div class="weather-grid">
+                <div class="weather-item">
+                  <i class="fas fa-sun weather-icon"></i>
+                  <span class="weather-label">Weather</span>
+                  <strong class="weather-value">28°C</strong>
+                  <span class="weather-sub">Clear Sky</span>
+                </div>
+                <div class="weather-item">
+                  <i class="fas fa-calendar weather-icon"></i>
+                  <span class="weather-label">Event</span>
+                  <strong class="weather-value">Match Day</strong>
+                  <span class="weather-sub">18:45</span>
+                </div>
+                <div class="weather-item">
+                  <i class="fas fa-car weather-icon"></i>
+                  <span class="weather-label">Traffic</span>
+                  <strong class="weather-value">Moderate</strong>
+                  <span class="weather-sub">Near Stadium</span>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- Monitoring View -->
+        <section class="view" id="monitoring-view">
+          <div class="view-header">
+            <h2>Live Monitoring</h2>
+            <p>Real-time camera feeds and sensor data</p>
+          </div>
+          <div class="camera-grid" id="cameraGrid">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+        <!-- Operations View -->
+        <section class="view" id="operations-view">
+          <div class="view-header">
+            <h2>Operations Center</h2>
+            <p>Manage stadium operations, ticketing, and scheduling</p>
+          </div>
+          <div class="ops-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>Ticket Scanner</h3>
+                  <span class="panel-subtitle">Fraud detection & validation</span>
+                </div>
+              </div>
+              <div class="scanner-form">
+                <label>Ticket Code
+                  <input id="ticketCode" type="text" value="CITY-FINAL-A12-8841" />
+                </label>
+                <button class="btn-primary" id="scanTicket"><i class="fas fa-qrcode"></i> Scan Ticket</button>
+                <div class="scan-result" id="scanResult">
+                  <strong>Ready to scan</strong>
+                  <span>Duplicate, invalid pattern, and resale-risk checks.</span>
+                </div>
+              </div>
+              <div class="ticket-queue" id="ticketQueue"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>Seat Recommendation</h3>
+                  <span class="panel-subtitle">AI-powered seat optimizer</span>
+                </div>
+              </div>
+              <div class="seat-form">
+                <div class="seat-form-grid">
+                  <label>Fan Priority
+                    <select id="seatPriority">
+                      <option value="view">Best pitch view</option>
+                      <option value="budget">Lower price</option>
+                      <option value="family">Family zone</option>
+                      <option value="accessible">Accessible</option>
+                    </select>
+                  </label>
+                  <label>Group Size
+                    <input id="groupSize" type="number" min="1" max="8" value="2" />
+                  </label>
+                  <label>Max Budget
+                    <input id="seatBudget" type="range" min="40" max="260" value="140" />
+                    <span id="budgetReadout">$140</span>
+                  </label>
+                </div>
+                <button class="btn-primary" id="recommendSeat"><i class="fas fa-chair"></i> Recommend Seats</button>
+              </div>
+              <div class="seat-map" id="seatMap"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>Fixture Optimizer</h3>
+                  <span class="panel-subtitle">Schedule management</span>
+                </div>
+                <button class="btn-primary-sm" id="optimizeSchedule"><i class="fas fa-magic"></i> Optimize</button>
+              </div>
+              <div class="schedule-list" id="scheduleList"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>Operations Report</h3>
+                  <span class="panel-subtitle">AI-generated summary</span>
+                </div>
+              </div>
+              <div class="report-box" id="opsReport"></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- Analytics View -->
+        <section class="view" id="analytics-view">
+          <div class="view-header">
+            <h2>Advanced Analytics</h2>
+            <p>Deep insights and performance trends</p>
+          </div>
+          <div class="analytics-detail-grid">
+            <section class="panel">
+              <div class="panel-header"><div><h3>Demand Forecast</h3></div></div>
+              <div class="forecast-list" id="forecastList"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-header"><div><h3>Fan Experience Score</h3></div></div>
+              <div class="fan-score-display">
+                <div class="fan-score-circle" id="fanScoreCircle">
+                  <span class="fan-score-value">87</span>
+                  <span class="fan-score-label">/ 100</span>
+                </div>
+                <div class="fan-score-breakdown" id="fanScoreBreakdown"></div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- Reports View -->
+        <section class="view" id="reports-view">
+          <div class="view-header">
+            <h2>Reports</h2>
+            <p>Generate and download operational reports</p>
+          </div>
+          <div class="reports-grid">
+            <div class="report-card" id="reportMatch">
+              <i class="fas fa-futbol report-card-icon"></i>
+              <h4>Match Day Report</h4>
+              <p>Full operational summary</p>
+              <button class="btn-primary-sm"><i class="fas fa-download"></i> Generate</button>
+            </div>
+            <div class="report-card" id="reportSecurity">
+              <i class="fas fa-shield-alt report-card-icon"></i>
+              <h4>Security Report</h4>
+              <p>Incident & alert analysis</p>
+              <button class="btn-primary-sm"><i class="fas fa-download"></i> Generate</button>
+            </div>
+            <div class="report-card" id="reportFinance">
+              <i class="fas fa-chart-pie report-card-icon"></i>
+              <h4>Financial Report</h4>
+              <p>Revenue & cost breakdown</p>
+              <button class="btn-primary-sm"><i class="fas fa-download"></i> Generate</button>
+            </div>
+            <div class="report-card" id="reportSustain">
+              <i class="fas fa-leaf report-card-icon"></i>
+              <h4>Sustainability Report</h4>
+              <p>Energy & waste metrics</p>
+              <button class="btn-primary-sm"><i class="fas fa-download"></i> Generate</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Alerts View -->
+        <section class="view" id="alerts-view">
+          <div class="view-header">
+            <h2>Alert Management</h2>
+            <p>Monitor and manage all security and operational alerts</p>
+          </div>
+          <div class="alerts-full-list" id="alertsFullList"></div>
+        </section>
+
+        <!-- Settings View -->
+        <section class="view" id="settings-view">
+          <div class="view-header">
+            <h2>Settings</h2>
+            <p>Configure your dashboard and system preferences</p>
+          </div>
+          <div class="settings-grid">
+            <section class="panel">
+              <h3>General</h3>
+              <div class="setting-row">
+                <div><strong>Auto-refresh interval</strong><span>How often dashboard data refreshes</span></div>
+                <select id="refreshInterval">
+                  <option value="5">5 seconds</option>
+                  <option value="10" selected>10 seconds</option>
+                  <option value="30">30 seconds</option>
+                  <option value="60">1 minute</option>
+                </select>
+              </div>
+              <div class="setting-row">
+                <div><strong>Notification sounds</strong><span>Play sounds for alerts</span></div>
+                <label class="toggle-switch"><input type="checkbox" id="notifSounds" checked /><span class="toggle-slider"></span></label>
+              </div>
+              <div class="setting-row">
+                <div><strong>Alert threshold</strong><span>Minimum severity for notifications</span></div>
+                <select id="alertThreshold">
+                  <option value="low">Low</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High</option>
+                  <option value="critical">Critical only</option>
+                </select>
+              </div>
+            </section>
+            <section class="panel">
+              <h3>Simulation</h3>
+              <div class="setting-row">
+                <div><strong>Scenario</strong><span>Select match scenario</span></div>
+                <select id="scenarioSelect">
+                  <option value="normal">Normal flow</option>
+                  <option value="gates">Gates opening</option>
+                  <option value="halftime">Halftime surge</option>
+                  <option value="weather">Rain delay</option>
+                  <option value="security">Security incident</option>
+                </select>
+              </div>
+              <div class="setting-row">
+                <div><strong>Advance simulation</strong><span>Step forward in time</span></div>
+                <button class="btn-primary-sm" id="tickButton"><i class="fas fa-forward"></i> Step Forward</button>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- Fan Assistant View (hidden, triggered by nav) -->
+        <section class="view" id="fan-view">
+          <div class="view-header">
+            <h2>Fan Assistant</h2>
+            <p>AI-powered visitor support</p>
+          </div>
+          <div class="fan-layout">
+            <section class="panel chat-panel">
+              <div class="chat-window" id="chatWindow"></div>
+              <form class="chat-form" id="chatForm">
+                <input id="chatInput" type="text" placeholder="Ask about gates, food, seats, restrooms, or match info..." />
+                <button type="submit"><i class="fas fa-paper-plane"></i></button>
+              </form>
+            </section>
+            <section class="panel">
+              <h3>Recommended Now</h3>
+              <div class="recommendation-list" id="fanPicks"></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- Sustainability View -->
+        <section class="view" id="sustainability-view">
+          <div class="view-header">
+            <h2>Sustainability Dashboard</h2>
+            <p>Energy, waste, and environmental metrics</p>
+          </div>
+          <div class="sustain-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <div><h3>Lighting & HVAC</h3></div>
+                <button class="btn-primary-sm" id="optimizeEnergy"><i class="fas fa-leaf"></i> Optimize</button>
+              </div>
+              <div class="energy-grid" id="energyGrid"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-header"><div><h3>Waste & Carbon Tracker</h3></div></div>
+              <div class="sustainability-list" id="sustainabilityList"></div>
+            </section>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal-content" id="modalContent">
+        <div class="modal-header">
+          <h3 id="modalTitle">Details</h3>
+          <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+      </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="static/app.js"></script>
+  </body>
+</html>
